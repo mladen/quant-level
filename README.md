@@ -43,7 +43,10 @@ Quant level is a project that helps with analyzing and predicting stock prices. 
 
 - Strategy development:
   - Design a simple trading strategy: Develop a basic trading strategy (e.g. moving average) based on the analyzed data.
+    - NOTE: Check out SMA (Simple Moving Average), EMA (Exponential Moving Average) and weighted moving average (WMA) for moving average strategies. Check out ǌhat moving average crossover is.
   - Testing: Test the trading strategy using historical data to evaluate the application's performance.
+    - NOTE: We should consider implementing a backtesting framework to evaluate the strategy's historical performance accurately. Check how we can implement this in Python.
+    - NOTE: Develope tests for our trading strategy to validate its effectivenes under various market conditions? (optional)
 
 # Phase 4: v0.4
 
