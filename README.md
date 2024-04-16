@@ -1,4 +1,4 @@
-# Quant level (this is the working title, it may change)
+# Quant level
 
 ## Description
 
@@ -51,11 +51,17 @@ Quant level is a project that helps with analyzing and predicting stock prices. 
 # Phase 4: v0.4
 
 - Risk management:
-  - Implementation of basic risk management techniques: Incorporate risk management principles such as stop-loss orders, etc.
-  - Fine-tuning: Optimize trading strategy parameters to improve custom risk and returns.
+  - Implementation of basic risk management techniques
+    - Incorporate risk management principles such as stop-loss orders and position sizing strategies to manage risk effectively.
+    - Implement risk-adjusted performance metrics (e.g. Sharpe ratio, Sortino ratio) to evaluate the strategy's risk-adjusted returns.
+  - Fine-tuning
+    - Use optimization techniques (e.g. grid search, genetic algorithms) to fine-tune the trading strategy parameters (automatically?) for better performance.
+    - NOTE: (Optional) Conduct sensitivity analysis to evaluate the strategy's performance under different parameter values.
 
 # Phase 5: v1.0 (Final version)
 
 - Additional functionalities:
-  - Data streaming and real-time trading simulation.
-  - User interface enhancement: Improve the user interface for better usability and visualization of trading signals.
+  - Data streaming and real-time trading simulation
+    - NOTE: Maybe use websockets to stream real-time data and simulate trading in real-time?
+  - User interface enhancement
+    - Improve the user interface for better usability and visualization of trading signals.
