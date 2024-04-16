@@ -29,8 +29,15 @@ Quant level is a project that helps with analyzing and predicting stock prices. 
 ### Phase 2: v0.2
 
 - Data analysis:
-  - Implementation of Basic technical indicators: Calculate and display basic technical indicators such as moving average, etc.
+  - Implementation of Basic technical indicators
+    - Calculate and display basic technical indicators such as moving averages, RSI (Relative Strength Index), MACD (Moving Average Convergence Divergence), etc.
+      - NOTE: We should ensure that our analysis/calculation functions are modular and can be easily extended to incorporate more complex indicators in future phases etc.
   - Correlation analysis: Analyze correlations between different stocks and market indices.
+    - Use statistical methods (e.g. Pearson correlation coefficient) to analyze the relationship between different stocks and market indices.
+      - NOTE: We should consider the scalability of our correlation analysis functions to handle a large number of stocks and indices. Well, maybe for now we should just focus on a few stocks and indices to keep things simple.
+      - NOTE: We should also consider the visualization (using heatmaps or something\*) of the correlation analysis results to make it easier for users to interpret the results.
+
+* We can check what Vue.js has to offer for data visualization.
 
 # Phase 3: v0.3
 
