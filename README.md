@@ -13,7 +13,7 @@
 
 ## Description
 
-Quant level is a project that helps with analyzing and predicting stock prices.
+Quant level is a project that helps with short-term trading and long-term investing.
 
 ## Technologies
 
@@ -25,9 +25,17 @@ The project will be built using the following technologies:
 
 ## Features
 
-- Stocks prediction
-- Stock price analysis
-- Stocks portfolio ?
+- Short-term (day trading):
+  - Stock price analysis
+  - Stock price prediction
+  - Market trends prediction
+- Long-term (investing):
+  - Market trends analysis
+  - Market trends prediction
+- General
+  - Stocks portfolio
+
+NOTE: For long-term investing we should analyze companies, using their financial reports, and predict their stock prices
 
 ## Roadmap
 
