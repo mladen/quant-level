@@ -3,6 +3,7 @@
 - [Quant level](#quant-level)
   - [Description](#description)
   - [Technologies](#technologies)
+  - [Setup instructions](#setup-instructions)
   - [Features](#features)
   - [Roadmap](#roadmap)
     - [Phase 1: v0.1 (Basic app functionality)](#phase-1-v01-basic-app-functionality)
@@ -22,6 +23,20 @@ The project will be built using the following technologies:
 - Python, Django(?)
 - SQLite(?) or PostgreSQL(?)
 - Vue.js(?)
+
+## Setup instructions
+
+1. Clone the repository
+2. Install the required dependencies
+
+- For the backend:
+  - Install virtualenv: `pip3 install virtualenv`
+  - Create a virtual environment: `python3 -m venv env`
+  - Activate the virtual environment:
+    - Windows: `env\Scripts\activate`
+    - Linux: `source env/bin/activate`
+
+1. Run the application
 
 ## Features
 
