@@ -35,6 +35,7 @@ The project will be built using the following technologies:
   - Activate the virtual environment:
     - Windows: `env\Scripts\activate`
     - Linux: `source env/bin/activate`
+  - Install the required dependencies: `pip install -r requirements.txt`
 
 1. Run the application
 
