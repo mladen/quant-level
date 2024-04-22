@@ -16,6 +16,8 @@
 
 Quant level is a project that helps with short-term trading and long-term investing.
 
+![Quant Level App Screenshot](public/images/screenshot.png)
+
 ## Technologies
 
 The project will be built using the following technologies:
