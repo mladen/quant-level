@@ -1,12 +1,15 @@
 import React from 'react';
+import StockRow from './StockRow';
+import './App.css';
 
 const StockList = ({ stocks }) => {
   return (
-    <div style={{ width: '90%', margin: 'auto', overflowX: 'auto' }}>
+    <div className="table-container">
       <table>
         <thead>
           <tr>
             <th>Ticker</th>
+            <th>Name</th>
             <th>Date</th>
             <th>Open</th>
             <th>High</th>
@@ -16,17 +19,9 @@ const StockList = ({ stocks }) => {
           </tr>
         </thead>
         <tbody>
-          {stocks.map((stock, index) => (
-            stock.map((data, idx) => (
-              <tr key={idx}>
-                <td>{data.Ticker}</td>
-                <td>{data.Date}</td>
-                <td>{data.Open.toFixed(2)}</td>
-                <td>{data.High.toFixed(2)}</td>
-                <td>{data.Low.toFixed(2)}</td>
-                <td>{data.Close.toFixed(2)}</td>
-                <td>{data.Volume}</td>
-              </tr>
+          {stocks.map((stockGroup, index) => (
+            stockGroup.map((stock, idx) => (
+              <StockRow key={`${index}-${idx}`} stock={stock} />
             ))
           ))}
         </tbody>
@@ -36,3 +31,4 @@ const StockList = ({ stocks }) => {
 };
 
 export default StockList;
+

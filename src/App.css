@@ -17,6 +17,20 @@
     display: block;
     margin-bottom: 0.2em;
   }
+
+  .table-container {
+    width: 90%; /* or 80% based on your preference */
+    margin: 2em auto; /* This centers the table horizontally */
+    overflow-x: auto; /* Adds scroll to table if the screen is too small */
+  }
+  
+  table {
+    width: 100%; /* Makes the table expand to fill its container */
+  }  
+
+  table th {
+    text-align: left; /* Aligns column titles to the left */
+  }
   
   input {
     margin-bottom: 1em;
