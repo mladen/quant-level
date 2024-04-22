@@ -39,7 +39,11 @@ The project will be built using the following technologies:
     - Linux: `source env/bin/activate`
   - Install the required dependencies: `pip install -r requirements.txt`
 
-1. Run the application
+3. Run the application
+   - For the backend:
+     - Start the Flask server: `python3 src/app.py` (execute this command in the root directory of the project)
+   - For the frontend:
+     - Run the React application: `npm run start` (execute this command in the root directory of the project)
 
 ## Features
 
