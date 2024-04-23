@@ -29,21 +29,29 @@ The project will be built using the following technologies:
 ## Setup instructions
 
 1. Clone the repository
+
 2. Install the required dependencies
 
-- For the backend:
-  - Install virtualenv: `pip3 install virtualenv`
-  - Create a virtual environment: `python3 -m venv env`
-  - Activate the virtual environment:
-    - Windows: `env\Scripts\activate`
-    - Linux: `source env/bin/activate`
-  - Install the required dependencies: `pip install -r requirements.txt`
+   - For the backend:
+     - Install virtualenv: `pip3 install virtualenv`
+     - Create a virtual environment: `python3 -m venv env`
+     - Activate the virtual environment:
+       - Windows: `env\Scripts\activate`
+       - Linux: `source env/bin/activate`
+     - Install the required dependencies: `pip install -r requirements.txt`
+   - For the frontend:
+     - Install Node.js and npm if you haven't already
+     - Install the required dependencies: `npm install`
 
 3. Run the application
+
    - For the backend:
-     - Start the Flask server: `python3 src/app.py` (execute this command in the root directory of the project)
-   - For the frontend:
-     - Run the React application: `npm run start` (execute this command in the root directory of the project)
+     - Start the Flask server (execute this command in the root directory of the project):
+       - Windows: `python src\api.py` or `env\Scripts\python.exe src\api.py`
+       - Linux: `python3 src/api.py`
+   - For the frontend (execute this command in the root directory of the project):
+     - Run the React application:
+       - Windows/Linux: `npm run start`
 
 ## Features
 
@@ -64,7 +72,7 @@ NOTE: For long-term investing we should analyze companies, using their financial
 ### Phase 1: v0.1 (Basic app functionality)
 
 - Price history download: Implement functionality to download historical stock prices from the stock exchange API.
-  - We will use the [TradingView](https://www.tradingview.com/) [API](https://www.tradingview.com/rest-api-spec/) (optional [Yahoo Finance](https://finance.yahoo.com/) [API](https://developer.yahoo.com/api/)) to download historical stock prices.
+  - We will use the ~~[TradingView](https://www.tradingview.com/) [API](https://www.tradingview.com/rest-api-spec/)~~ (~~optional~~ [Yahoo Finance](https://finance.yahoo.com/) [API](https://developer.yahoo.com/api/)) to download historical stock prices.
     - NOTE: Whichever API we choose, we will need to understand the API's rate limits and data availibility to manage data retrieval efficiently.
 - Data preprocessing: Clean and process the downloaded data for further analysis.
   - We will need to handle missing data, outliers, and other data quality issues (formatting issues in the downloaded data).
