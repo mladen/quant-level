@@ -175,8 +175,8 @@ export default function Dashboard(props) {
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
               {/* Chart */}
-              {stocks.map((stock) => (
-                <Grid item xs={12} md={8} lg={9}>
+              {stocks.map((stock, index) => (
+                <Grid item xs={12} md={8} lg={9} key={index}>
                   <Paper
                     sx={{
                       p: 0,
@@ -187,7 +187,7 @@ export default function Dashboard(props) {
                     }}
                   >
                     {/* <Chart /> */}
-                    <LineChart key={stock.id} stock={stock} />
+                    <LineChart key={index} stock={stock} />
                   </Paper>
                 </Grid>
               ))}
