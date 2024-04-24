@@ -31,7 +31,7 @@ const xLabels = [
   "23.04.2024.",
 ];
 
-export default function SimpleLineChart() {
+export default function SimpleLineChart(prop) {
   return (
     <LineChart
       // style={{ width: "100%", flexGrow: 1, overflow: "hidden" }}
@@ -40,7 +40,7 @@ export default function SimpleLineChart() {
       series={[
         {
           data: priceData,
-          label: "Alphabet Inc. Class A",
+          label: `${prop.stock[0].Name} (Ticker: ${prop.stock[0].Ticker})`,
           color: "blue",
         },
         {

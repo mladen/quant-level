@@ -22,6 +22,8 @@ import { mainListItems, secondaryListItems } from "./listItems";
 import Deposits from "./Deposits";
 import Orders from "./Orders";
 
+import { StocksDataContext } from "../contexts/appContext";
+
 import LineChart from "../../src/LineChart";
 
 function Copyright(props) {
@@ -97,6 +99,8 @@ export default function Dashboard(props) {
     setOpen(!open);
   };
 
+  const { stocks } = React.useContext(StocksDataContext);
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: "flex" }}>
@@ -171,21 +175,22 @@ export default function Dashboard(props) {
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
               {/* Chart */}
-
-              <Grid item xs={12} md={8} lg={9}>
-                <Paper
-                  sx={{
-                    p: 0,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                    // width: "100%",
-                  }}
-                >
-                  {/* <Chart /> */}
-                  <LineChart />
-                </Paper>
-              </Grid>
+              {stocks.map((stock) => (
+                <Grid item xs={12} md={8} lg={9}>
+                  <Paper
+                    sx={{
+                      p: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      height: 240,
+                      // width: "100%",
+                    }}
+                  >
+                    {/* <Chart /> */}
+                    <LineChart key={stock.id} stock={stock} />
+                  </Paper>
+                </Grid>
+              ))}
               {/* Recent Deposits */}
               <Grid item xs={12} md={4} lg={3}>
                 <Paper
