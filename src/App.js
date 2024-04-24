@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
 import DateInput from "./DateInput";
@@ -7,7 +7,8 @@ import NumberInput from "./NumberInput";
 import ListButton from "./ListButton";
 import StockList from "./StockList";
 
-import LineChart from "./LineChart";
+import { format, addDays } from "date-fns";
+import Dashboard from "./dashboard/Dashboard";
 // import { LineChart } from "@mui/x-charts";
 
 function App() {
@@ -17,40 +18,51 @@ function App() {
   const [numberOfStocks, setNumberOfStocks] = useState(5);
   const [stocks, setStocks] = useState([]);
 
-  const handleListStocks = async () => {
-    try {
-      const response = await axios.post("http://localhost:5000/fetch_stocks", {
-        startDate,
-        endDate,
-        numberOfStocks,
-        tickers: [
-          "AAPL",
-          "AMZN",
-          "BAC",
-          "BRK-B",
-          "DIS",
-          "GOOGL",
-          "HD",
-          "JNJ",
-          "JPM",
-          "KO",
-          "MA",
-          "META",
-          "MSFT",
-          "NVDA",
-          "PG",
-          "TSLA",
-          "UNH",
-          "V",
-          "WMT",
-          "XOM",
-        ],
-      });
-      setStocks(response.data);
-    } catch (error) {
-      console.error("Error fetching stocks:", error);
-    }
-  };
+  useEffect(() => {
+    const handleListStocks = async () => {
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/fetch_stocks",
+          {
+            startDate,
+            endDate,
+            numberOfStocks,
+            tickers: [
+              "AAPL",
+              "AMZN",
+              "BAC",
+              "BRK-B",
+              "DIS",
+              "GOOGL",
+              "HD",
+              "JNJ",
+              "JPM",
+              "KO",
+              "MA",
+              "META",
+              "MSFT",
+              "NVDA",
+              "PG",
+              "TSLA",
+              "UNH",
+              "V",
+              "WMT",
+              "XOM",
+            ],
+          }
+        );
+        setStocks(response.data);
+      } catch (error) {
+        console.error("Error fetching stocks:", error);
+      }
+    };
+
+    const today = new Date();
+    const thirtyDaysAgo = addDays(today, -30);
+    setStartDate(format(thirtyDaysAgo, "yyyy-MM-dd"));
+    setEndDate(format(today, "yyyy-MM-dd"));
+    handleListStocks();
+  }, [startDate, endDate, numberOfStocks]); // Run when dependencies change
 
   const handleNumberChange = (event) => {
     const number = parseInt(event.target.value, 10); // Convert input value to integer
@@ -61,6 +73,8 @@ function App() {
 
   return (
     <div className="App">
+      <Dashboard stocks={stocks} />
+
       <div className="container">
         <div className="left-panel">
           <DateInput
@@ -89,9 +103,7 @@ function App() {
             min="3"
             max="20"
           />
-          <ListButton onClick={handleListStocks} />
-
-          <LineChart />
+          {/* <ListButton onClick={handleListStocks} /> */}
         </div>
       </div>
       <StockList stocks={stocks} />
