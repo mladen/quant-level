@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
 import DateInput from './DateInput';
-import ComboBox from './ComboBox';
+import ForecastMethodology from './ForecastMethodology';
+import InvestmentInput from './InvestmentInput';
 import NumberInput from './NumberInput';
+import DisplayFilter from './DisplayFilter';
 import ListButton from './ListButton';
 import StockList from './StockList';
 
@@ -11,8 +13,11 @@ function App() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [forecastMethodology, setForecastMethodology] = useState('');
-  const [numberOfStocks, setNumberOfStocks] = useState(5);
+  const [overallInvestmentBudget, setOverallInvestmentBudget] = useState('');
   const [stocks, setStocks] = useState([]);
+  const [overallBudget, setOverallBudget] = useState('');
+  const [numberOfStocks, setNumberOfStocks] = useState(5);
+  const [displayFilter, setDisplayFilter] = useState('Show all');
 
   const handleListStocks = async () => {
     try {
@@ -20,6 +25,8 @@ function App() {
         startDate,
         endDate,
         numberOfStocks,
+        overallBudget,
+        displayFilter: displayFilter,
         tickers: [
           'AAPL', 'AMZN', 'BAC', 'BRK-B', 'DIS', 'GOOGL', 'HD', 'JNJ', 'JPM', 'KO',
           'MA', 'META', 'MSFT', 'NVDA', 'PG', 'TSLA', 'UNH', 'V', 'WMT', 'XOM'
@@ -40,17 +47,31 @@ function App() {
 
   return (
     <div className="App">
-      <div className="container">
-        <div className="left-panel">
+      {/* New container for the three-column layout */}
+      <div className="three-column-container">
+        {/* Area 1: Dates */}
+        <div className="column">
           <DateInput label="Start Date" name="startDate" onDateChange={setStartDate} />
           <DateInput label="End Date" name="endDate" onDateChange={setEndDate} />
         </div>
-        <div className="right-panel">
-          <ComboBox 
+
+        {/* Area 2: Forecast Methodology and Display Filter */}
+        <div className="column">
+          <ForecastMethodology 
             label="Forecast Methodology"
-            name="forecastMethodology" 
-            options={['Method 1', 'Method 2']}
             onSelect={setForecastMethodology} 
+          />
+          <DisplayFilter onSelect={setDisplayFilter} />
+        </div>
+
+        {/* Area 3: Overall Investment Budget, Number of Stocks, and List Button */}
+        <div className="column">
+          <InvestmentInput 
+            label="Overall Investment Budget"
+            min={100} // Minimum of $100
+            max={100000000000} // Maximum of $100 billion
+            value={overallInvestmentBudget}
+            onInvestmentChange={setOverallInvestmentBudget}
           />
           <NumberInput 
             label="Number of Stocks" 
@@ -60,9 +81,13 @@ function App() {
             min="3" 
             max="20"
           />
-          <ListButton onClick={handleListStocks} />
+          <div className="column-button">
+            <ListButton onClick={handleListStocks} />
+          </div>
         </div>
       </div>
+
+      {/* Stock list remains unchanged */}
       <StockList stocks={stocks} />
     </div>
   );
