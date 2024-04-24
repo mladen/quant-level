@@ -1,37 +1,28 @@
 import * as React from "react";
 import { LineChart } from "@mui/x-charts/LineChart";
 
-const priceData = [4000, 3000, 2000, 2780, 1890, 2390, 3490];
-// const movingAverageData = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
-// movingAverageData is sum of priceData divided by the length of priceData
-// let movingAverageData = priceData.map((u) => u / priceData.length);
-let movingAverageData = [];
-let movingAverageDataPoint = 0;
+import { format, addDays } from "date-fns";
 
-for (let i = 0; i < priceData.length; i++) {
-  // console.log(priceData[i]);
-  if (i > 0) {
-    movingAverageDataPoint = Math.abs(priceData[i] + priceData[i - 1]) / 2;
+export default function SimpleLineChart(props) {
+  // Extract Date from all the stock data from props
+  const xLabels = props.stock.map((u) => format(new Date(u.Date), "dd.MM."));
+  const priceData = props.stock.map(
+    (u) => Math.round((u.Close + Number.EPSILON) * 100) / 100
+  );
 
-    movingAverageData.push(movingAverageDataPoint);
-  } else {
-    movingAverageData.push(priceData[i]);
+  let movingAverageData = [];
+  let movingAverageDataPoint = 0;
+
+  for (let i = 0; i < priceData.length; i++) {
+    if (i > 0) {
+      movingAverageDataPoint = Math.abs(priceData[i] + priceData[i - 1]) / 2;
+
+      movingAverageData.push(movingAverageDataPoint);
+    } else {
+      movingAverageData.push(priceData[i]);
+    }
   }
-}
-//console.log(movingAverageData);
-//const movingAverageData =
 
-const xLabels = [
-  "17.04.2024.",
-  "18.04.2024.",
-  "19.04.2024.",
-  "20.04.2024.",
-  "21.04.2024.",
-  "22.04.2024.",
-  "23.04.2024.",
-];
-
-export default function SimpleLineChart(prop) {
   return (
     <LineChart
       // style={{ width: "100%", flexGrow: 1, overflow: "hidden" }}
@@ -40,7 +31,7 @@ export default function SimpleLineChart(prop) {
       series={[
         {
           data: priceData,
-          label: `${prop.stock[0].Name} (Ticker: ${prop.stock[0].Ticker})`,
+          label: `${props.stock[0].Name} (Ticker: ${props.stock[0].Ticker})`,
           color: "blue",
         },
         {
