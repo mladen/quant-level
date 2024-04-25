@@ -173,9 +173,9 @@ export default function Dashboard(props) {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              {/* Chart */}
-              {stocks.map((stock, index) => (
+            {stocks.map((stock, index) => (
+              <Grid container spacing={3} mb={4} key={index}>
+                {/* Chart */}
                 <Grid item xs={12} md={8} lg={9} key={index}>
                   <Paper
                     sx={{
@@ -190,27 +190,29 @@ export default function Dashboard(props) {
                     <LineChart key={index} stock={stock} />
                   </Paper>
                 </Grid>
-              ))}
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  <Deposits />
-                </Paper>
+                {/* Recent Deposits */}
+                <Grid item xs={12} md={4} lg={3}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      height: 240,
+                    }}
+                  >
+                    <Deposits stock={stock} />
+                  </Paper>
+                </Grid>
+                {/* Recent Orders */}
+                {/* <Grid item xs={12}>
+                  <Paper
+                    sx={{ p: 2, display: "flex", flexDirection: "column" }}
+                  >
+                    <Orders stocks="stocks" />
+                  </Paper>
+                </Grid> */}
               </Grid>
-              {/* Recent Orders */}
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-                  <Orders stocks="stocks" />
-                </Paper>
-              </Grid>
-            </Grid>
+            ))}
             <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>
