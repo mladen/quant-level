@@ -90,10 +90,25 @@ def save_stocks_to_db():
             )
             conn.commit()
 
-    conn.commit()
-    conn.close()
+        # Fetch stock data from yfinance
+        stock_info = yf.Ticker(ticker)
+        stock_data = stock_info.history(start=start_date, end=end_date)
+        if not stock_data.empty:
+            stock_data.reset_index(inplace=True)
+            stock_data["Ticker"] = ticker
 
-    # return jsonify(results)
+            # Insert stock data into stock_prices table
+            stock_data[["Date", "Open", "High", "Low", "Close", "Volume"]].to_sql(
+                "stock_prices", conn, if_exists="append", index=False
+            )
+
+            conn.commit()
+
+        print(f"Stock data for {ticker} saved successfully")
+        print(stock_data.head())
+
+    # conn.commit()
+    conn.close()
 
 
 @app.route("/fetch_stocks", methods=["POST"])
