@@ -1,38 +1,101 @@
-.container {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .left-panel,
-  .right-panel {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .input-group {
-    margin-bottom: 0.5em;
-  }
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 
-  .label {
-    display: block;
-    margin-bottom: 0.2em;
-  }
+.App {
+  font-family: Arial, sans-serif;
+  padding-top: 30px;
+}
 
-  .table-container {
-    width: 90%; /* or 80% based on your preference */
-    margin: 2em auto; /* This centers the table horizontally */
-    overflow-x: auto; /* Adds scroll to table if the screen is too small */
-  }
-  
-  table {
-    width: 100%; /* Makes the table expand to fill its container */
-  }  
+.column {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Maintains that each column takes equal width */
+  padding: 0 10px;
+  margin: 0 50px;
+}
 
-  table th {
-    text-align: left; /* Aligns column titles to the left */
-  }
-  
-  input {
-    margin-bottom: 1em;
-  }
-  
+.column:first-child {
+  margin-left: 0;
+  margin-right: 50px;
+}
+
+.column:last-child {
+  margin-left: 50px;
+  margin-right: 0;
+}
+
+.three-column-container {
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 0 25px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
+}
+
+.label {
+  margin-bottom: 0.5em;
+}
+
+input,
+select {
+  padding: 8px;
+  margin-top: 2px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.column-button button {
+  padding: 1em;
+  width: 75%;
+  align-self: flex-start;
+  margin-top: auto;
+  border: none;
+  background-color: limegreen;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.table-container {
+  width: 90%;
+  margin: 20px auto;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th,
+table td {
+  text-align: left;
+  padding: 8px;
+}
+
+table th {
+  background-color: #f0f0f0;
+  border-bottom: 2px solid #dee2e6;
+}
+
+table tr:hover {
+  background-color: #f2f2f2;
+}
+
+.summary-row {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  color: #333;
+}
+
+table .summary-row:hover {
+  background-color: #f8f9fa;
+}
