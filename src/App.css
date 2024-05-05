@@ -82,10 +82,20 @@ table td {
 }
 
 table th {
-  background-color: #f8f9fa;
+  background-color: #f0f0f0;
   border-bottom: 2px solid #dee2e6;
 }
 
 table tr:hover {
   background-color: #f2f2f2;
+}
+
+.summary-row {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  color: #333;
+}
+
+table .summary-row:hover {
+  background-color: #f8f9fa;
 }

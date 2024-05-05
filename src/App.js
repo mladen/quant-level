@@ -12,35 +12,38 @@ import StockList from './StockList';
 function App() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [forecastMethodology, setForecastMethodology] = useState('');
-  const [overallInvestmentBudget, setOverallInvestmentBudget] = useState('');
+  const [forecastMethodology, setForecastMethodology] = useState('random'); // Set 'Random Selection' as the default Forecast Methodology
+  const [overallInvestmentBudget, setOverallInvestmentBudget] = useState(1000);
   const [stocks, setStocks] = useState([]);
-  const [overallBudget, setOverallBudget] = useState('');
   const [numberOfStocks, setNumberOfStocks] = useState(5);
+  const [activeNumberOfStocks, setActiveNumberOfStocks] = useState(5);
   const [displayFilter, setDisplayFilter] = useState('Show all');
 
   const handleListStocks = async () => {
+    const allTickers = ['AAPL', 'AMZN', 'BAC', 'BRK-B', 'DIS', 'GOOGL', 'HD', 'JNJ', 'JPM', 'KO', 'MA', 'META', 'MSFT', 'NVDA', 'PG', 'TSLA', 'UNH', 'V', 'WMT', 'XOM'];  // Full list of possible tickers
+    // Randomly pick `numberOfStocks` tickers from `allTickers`
+    const selectedTickers = allTickers
+    .sort(() => Math.random() - 0.5) // Shuffle the array randomly
+    .slice(0, numberOfStocks); // Take the first n elements
+  
+    
     try {
-      const response = await axios.post('http://localhost:5000/fetch_stocks', {
+      const response = await axios.post('http://localhost:5000/get_stock_prices', {
         startDate,
         endDate,
-        numberOfStocks,
-        overallBudget,
-        displayFilter: displayFilter,
-        tickers: [
-          'AAPL', 'AMZN', 'BAC', 'BRK-B', 'DIS', 'GOOGL', 'HD', 'JNJ', 'JPM', 'KO',
-          'MA', 'META', 'MSFT', 'NVDA', 'PG', 'TSLA', 'UNH', 'V', 'WMT', 'XOM'
-        ]
+        tickers: selectedTickers
       });
       setStocks(response.data);
+      setActiveNumberOfStocks(numberOfStocks);
     } catch (error) {
       console.error('Error fetching stocks:', error);
     }
-  };
+};
+
 
   const handleNumberChange = (event) => {
     const number = parseInt(event.target.value, 10); // Convert input value to integer
-    if (!isNaN(number) && number >= 3 && number <= 20) {
+    if (!isNaN(number) && number >= 2 && number <= 20) {
       setNumberOfStocks(number);
     }
   };
@@ -58,9 +61,10 @@ function App() {
         {/* Area 2: Forecast Methodology and Display Filter */}
         <div className="column">
           <ForecastMethodology 
-            label="Forecast Methodology"
-            onSelect={setForecastMethodology} 
-          />
+                  label="Forecast Methodology"
+                  onSelect={setForecastMethodology} 
+                  selectedMethodology={forecastMethodology}  // Pass the selected methodology as a prop
+              />
           <DisplayFilter onSelect={setDisplayFilter} />
         </div>
 
@@ -78,17 +82,20 @@ function App() {
             name="numberOfStocks" 
             value={numberOfStocks} 
             onNumberChange={handleNumberChange} 
-            min="3" 
-            max="20"
+            min={2} 
+            max={20}
           />
           <div className="column-button">
             <ListButton onClick={handleListStocks} />
           </div>
         </div>
       </div>
-
-      {/* Stock list remains unchanged */}
-      <StockList stocks={stocks} />
+      <StockList 
+        stocks={stocks} 
+        numberOfStocks={activeNumberOfStocks} 
+        overallInvestmentBudget={parseFloat(overallInvestmentBudget)}
+        displayFilter={displayFilter}
+      />
     </div>
   );
 }
