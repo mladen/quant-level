@@ -107,6 +107,23 @@ def save_stocks_to_db():
         print(f"Stock data for {ticker} saved successfully")
         print(stock_data.head())
 
+        # Retrieve stock prices for the specified ticker and date range
+        # c.execute(
+        #     "SELECT * FROM stock_prices WHERE ticker=? AND date BETWEEN ? AND ?",
+        #     (ticker, start_date, end_date),
+        # )
+
+        # Fetch all the rows from the result
+        # fetched_data = c.fetchall()
+
+        # Append the fetched data to the results list
+        # results.append(
+        #     [
+        #         dict(zip(["date", "open", "high", "low", "close", "volume"], row[1:]))
+        #         for row in fetched_data
+        #     ]
+        # )
+
     # conn.commit()
     conn.close()
 
