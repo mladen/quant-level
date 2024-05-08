@@ -5,6 +5,7 @@ const StockList = ({ stocks, numberOfStocks, overallInvestmentBudget, displayFil
     // Ensure each value is calculated here before passing it to StockRow
     const enhancedStocks = stocks.map(stock => {
         const initialPrice = parseFloat(stock.start_avg);
+        const forecastPrice = parseFloat(stock.forecast_price);
         const finalPrice = parseFloat(stock.end_avg);
         const percentageInvested = 100 / numberOfStocks;
         const amountInvested = (percentageInvested / 100) * overallInvestmentBudget;
@@ -15,6 +16,7 @@ const StockList = ({ stocks, numberOfStocks, overallInvestmentBudget, displayFil
             ...stock,
             percentageInvested,
             amountInvested,
+            forecast_price: forecastPrice,
             percentageGainedLost,
             amountGainedLost
         };
@@ -44,6 +46,7 @@ const StockList = ({ stocks, numberOfStocks, overallInvestmentBudget, displayFil
                         <th>Percentage Invested</th>
                         <th>Amount Invested</th>
                         <th>Initial Price</th>
+                        <th>Forecasted Price</th>
                         <th>Final Price</th>
                         <th>Percentage Gained(Lost)</th>
                         <th>Amount Gained(Lost)</th>
@@ -54,9 +57,9 @@ const StockList = ({ stocks, numberOfStocks, overallInvestmentBudget, displayFil
                         <StockRow key={index} stock={stock} />
                     ))}
                     <tr className="summary-row">
-                        <td colSpan="6" style={{textAlign: 'right'}}>Total:</td>
-                        <td>{totalPercentageGainedLost.toFixed(2)}%</td>
-                        <td>${totalAmountGainedLost.toFixed(2)}</td>
+                        <td colSpan="7" className="text-right">Total:</td>
+                        <td className="text-right">{totalPercentageGainedLost.toFixed(2)}%</td>
+                        <td className="text-right">${totalAmountGainedLost.toFixed(2)}</td>
                     </tr>
                 </tbody>
             </table>

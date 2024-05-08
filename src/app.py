@@ -1,61 +1,41 @@
 from flask import Flask, jsonify, request
-from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import yfinance as yf
 from datetime import date, datetime, timedelta
+from models import db, DailyStockPrice
+from forecast import polynomial_regression
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stocks.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+db.init_app(app)
 CORS(app)
-
-class DailyStockPrice(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    ticker = db.Column(db.String(80), nullable=False)
-    company_name = db.Column(db.String(255))
-    date = db.Column(db.Date, nullable=False)
-    avg_price = db.Column(db.Float)
-
-    def __repr__(self):
-        return f'<DailyStockPrice {self.ticker} ({self.company_name}) on {self.date}>'
 
 def fetch_and_store_stock_data():
     tickers = ['AAPL', 'AMZN', 'BAC', 'BRK-B', 'DIS', 'GOOGL', 'HD', 'JNJ', 'JPM', 'KO', 'MA', 'META', 'MSFT', 'NVDA', 'PG', 'TSLA', 'UNH', 'V', 'WMT', 'XOM']
     end_date = date.today()
 
     for ticker in tickers:
-        # Check the last date for which data was stored
         last_data_point = DailyStockPrice.query.filter_by(ticker=ticker).order_by(DailyStockPrice.date.desc()).first()
-        if last_data_point:
-            start_date = last_data_point.date + timedelta(days=1)  # Start from the next day after the last stored date
-        else:
-            start_date = date(2023, 1, 1)  # If no data found, use a default start date
-        
+        start_date = last_data_point.date + timedelta(days=1) if last_data_point else date(2021, 1, 1)
+
         if start_date > end_date:
             print(f"All data up to date for {ticker}.")
-            continue  # Skip this ticker if the start date is beyond the end date
+            continue
 
         print(f"Fetching data for {ticker} from {start_date} to {end_date}")
         stock_info = yf.Ticker(ticker)
         stock_data = stock_info.history(start=start_date.strftime("%Y-%m-%d"), end=end_date.strftime("%Y-%m-%d"))
 
-        company_name = stock_info.info.get('longName')  # Retrieve the company name
-        if not stock_data.empty:
-            for index, row in stock_data.iterrows():
-                daily_data = DailyStockPrice(
-                    ticker=ticker,
-                    company_name=company_name,
-                    date=index.date(),
-                    avg_price=(row['Open'] + row['Close']) / 2
-                )
-                db.session.add(daily_data)
-                print(f"Adding to session: {daily_data}")
-            db.session.commit()
-            print(f"Data for {ticker} committed to the database.")
-        else:
-            print(f"No data found for {ticker} between {start_date} and {end_date}")
-
+        for index, row in stock_data.iterrows():
+            daily_data = DailyStockPrice(
+                ticker=ticker,
+                company_name=stock_info.info.get('longName'),
+                date=index.date(),
+                avg_price=(row['Open'] + row['Close']) / 2
+            )
+            db.session.add(daily_data)
+        db.session.commit()
 
 @app.route('/get_stock_prices', methods=['POST'])
 def get_stock_prices():
@@ -78,10 +58,24 @@ def get_stock_prices():
             }
             results.append(result)
     
-    if results:
-        return jsonify(results)
-    else:
-        return jsonify({'error': 'Data not found'}), 404
+    return jsonify(results if results else {'error': 'Data not found'}), (200 if results else 404)
+
+@app.route('/forecast_stock_prices', methods=['POST'])
+def forecast_stock_prices():
+    data = request.json
+    if not data or 'tickers' not in data or 'start_date' not in data or 'forecast_date' not in data:
+        return jsonify({'error': 'Missing data in request'}), 400
+
+    tickers = data['tickers']
+    try:
+        start_date = datetime.strptime(data['start_date'], '%Y-%m-%d').date()
+        forecast_date = datetime.strptime(data['forecast_date'], '%Y-%m-%d').date()
+    except ValueError as e:
+        return jsonify({'error': 'Invalid date format', 'details': str(e)}), 400
+    
+    results = polynomial_regression(tickers, start_date, forecast_date)
+    return jsonify(results if results else {'error': 'No data available for forecasting'}), (200 if results else 404)
+
 
 if __name__ == '__main__':
     with app.app_context():
