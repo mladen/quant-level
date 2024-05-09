@@ -9,6 +9,14 @@ import DisplayFilter from "./DisplayFilter";
 import ListButton from "./ListButton";
 import StockList from "./StockList";
 
+// Importing the Tabs, Tab, Typography, and Box components from Material-UI
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+
+// Importing the LineChart component (with dummy data for now) from the LineChart.js file
 import LineChart from "./components/LineChart";
 
 function App() {
@@ -21,6 +29,12 @@ function App() {
   const [numberOfStocks, setNumberOfStocks] = useState(5);
   const [activeNumberOfStocks, setActiveNumberOfStocks] = useState(5);
   const [displayFilter, setDisplayFilter] = useState("Show all");
+
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const handleListStocks = async () => {
     const allTickers = [
@@ -116,64 +130,118 @@ function App() {
     }
   };
 
+  function CustomTabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box sx={{ p: 3 }}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
+    );
+  }
+
+  CustomTabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+  };
+
+  function a11yProps(index) {
+    return {
+      id: `simple-tab-${index}`,
+      "aria-controls": `simple-tabpanel-${index}`,
+    };
+  }
+
   return (
     <div className="App">
-      <LineChart />
+      <Box sx={{ width: "100%" }}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="basic tabs example"
+            centered
+          >
+            <Tab label="Long term stock value prediction" {...a11yProps(0)} />
+            <Tab label="Short term stock value prediction" {...a11yProps(1)} />
+            <Tab label="Chat with PDFs (balance sheets)" {...a11yProps(2)} />
+          </Tabs>
+        </Box>
+        <CustomTabPanel value={value} index={0}>
+          {/* New container for the three-column layout */}
+          <div className="three-column-container">
+            {/* Area 1: Dates */}
+            <div className="column">
+              <DateInput
+                label="Start Date"
+                name="startDate"
+                onDateChange={setStartDate}
+              />
+              <DateInput
+                label="End Date"
+                name="endDate"
+                onDateChange={setEndDate}
+              />
+            </div>
 
-      {/* New container for the three-column layout */}
-      <div className="three-column-container">
-        {/* Area 1: Dates */}
-        <div className="column">
-          <DateInput
-            label="Start Date"
-            name="startDate"
-            onDateChange={setStartDate}
-          />
-          <DateInput
-            label="End Date"
-            name="endDate"
-            onDateChange={setEndDate}
-          />
-        </div>
+            {/* Area 2: Forecast Methodology and Display Filter */}
+            <div className="column">
+              <ForecastMethodology
+                label="Forecast Methodology"
+                onSelect={setForecastMethodology}
+                selectedMethodology={forecastMethodology} // Pass the selected methodology as a prop
+              />
+              <DisplayFilter onSelect={setDisplayFilter} />
+            </div>
 
-        {/* Area 2: Forecast Methodology and Display Filter */}
-        <div className="column">
-          <ForecastMethodology
-            label="Forecast Methodology"
-            onSelect={setForecastMethodology}
-            selectedMethodology={forecastMethodology} // Pass the selected methodology as a prop
-          />
-          <DisplayFilter onSelect={setDisplayFilter} />
-        </div>
-
-        {/* Area 3: Overall Investment Budget, Number of Stocks, and List Button */}
-        <div className="column">
-          <InvestmentInput
-            label="Overall Investment Budget"
-            min={100} // Minimum of $100
-            max={100000000000} // Maximum of $100 billion
-            value={overallInvestmentBudget}
-            onInvestmentChange={setOverallInvestmentBudget}
-          />
-          <NumberInput
-            label="Number of Stocks"
-            name="numberOfStocks"
-            value={numberOfStocks}
-            onNumberChange={handleNumberChange}
-            min={2}
-            max={20}
-          />
-          <div className="column-button">
-            <ListButton onClick={handleListStocks} />
+            {/* Area 3: Overall Investment Budget, Number of Stocks, and List Button */}
+            <div className="column">
+              <InvestmentInput
+                label="Overall Investment Budget"
+                min={100} // Minimum of $100
+                max={100000000000} // Maximum of $100 billion
+                value={overallInvestmentBudget}
+                onInvestmentChange={setOverallInvestmentBudget}
+              />
+              <NumberInput
+                label="Number of Stocks"
+                name="numberOfStocks"
+                value={numberOfStocks}
+                onNumberChange={handleNumberChange}
+                min={2}
+                max={20}
+              />
+              <div className="column-button">
+                <ListButton onClick={handleListStocks} />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <StockList
-        stocks={stocks}
-        numberOfStocks={activeNumberOfStocks}
-        overallInvestmentBudget={parseFloat(overallInvestmentBudget)}
-        displayFilter={displayFilter}
-      />
+          <StockList
+            stocks={stocks}
+            numberOfStocks={activeNumberOfStocks}
+            overallInvestmentBudget={parseFloat(overallInvestmentBudget)}
+            displayFilter={displayFilter}
+          />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={1}>
+          Short term stock value prediction goes here
+          <LineChart />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={2}>
+          Chat with PDF goes here, maybe, just maybe... :)
+        </CustomTabPanel>
+      </Box>
     </div>
   );
 }
