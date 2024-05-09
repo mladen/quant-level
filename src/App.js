@@ -166,7 +166,13 @@ function App() {
   return (
     <div className="App">
       <Box sx={{ width: "100%" }}>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Box
+          sx={{
+            borderBottom: 1,
+            borderColor: "divider",
+            background: "#e5e5e5",
+          }}
+        >
           <Tabs
             value={value}
             onChange={handleChange}
@@ -235,8 +241,14 @@ function App() {
           />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          Short term stock value prediction goes here
-          <LineChart />
+          <div className="three-column-container">
+            <div className="column"></div>
+            <div className="column">
+              Short term stock value prediction goes here
+              <LineChart />
+            </div>
+            <div className="column"></div>
+          </div>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
           Chat with PDF goes here, maybe, just maybe... :)
