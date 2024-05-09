@@ -6,8 +6,8 @@ const ForecastMethodology = ({ label, onSelect, selectedMethodology }) => {
         <label className="label">{label}:</label>
         <select value={selectedMethodology} onChange={e => onSelect(e.target.value)}>
             <option value="">Select forecast methodology</option>
-            <option value="method1">Methodology 1</option>
-            <option value="method2">Methodology 2</option>
+            {/* <option value="linear">Linear Regression</option> */}
+            <option value="polynomial_2">Quadratic Polynomial Regression</option>
             <option value="random">Random Selection</option>
         </select>
     </div>

@@ -12,35 +12,64 @@ import StockList from './StockList';
 function App() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [forecastMethodology, setForecastMethodology] = useState('random'); // Set 'Random Selection' as the default Forecast Methodology
+  const [forecastMethodology, setForecastMethodology] = useState('polynomial_2'); // Set 'Quadratic Polynomial Regression' as the default Forecast Methodology
   const [overallInvestmentBudget, setOverallInvestmentBudget] = useState(1000);
   const [stocks, setStocks] = useState([]);
   const [numberOfStocks, setNumberOfStocks] = useState(5);
   const [activeNumberOfStocks, setActiveNumberOfStocks] = useState(5);
   const [displayFilter, setDisplayFilter] = useState('Show all');
-
-  const handleListStocks = async () => {
-    const allTickers = ['AAPL', 'AMZN', 'BAC', 'BRK-B', 'DIS', 'GOOGL', 'HD', 'JNJ', 'JPM', 'KO', 'MA', 'META', 'MSFT', 'NVDA', 'PG', 'TSLA', 'UNH', 'V', 'WMT', 'XOM'];  // Full list of possible tickers
-    // Randomly pick `numberOfStocks` tickers from `allTickers`
-    const selectedTickers = allTickers
-    .sort(() => Math.random() - 0.5) // Shuffle the array randomly
-    .slice(0, numberOfStocks); // Take the first n elements
   
-    
+  const handleListStocks = async () => {
+    const allTickers = ['AAPL', 'AMZN', 'BAC', 'BRK-B', 'DIS', 'GOOGL', 'HD', 'JNJ', 'JPM', 'KO', 'MA', 'META', 'MSFT', 'NVDA', 'PG', 'TSLA', 'UNH', 'V', 'WMT', 'XOM'];
+  
     try {
-      const response = await axios.post('http://localhost:5000/get_stock_prices', {
-        startDate,
-        endDate,
-        tickers: selectedTickers
-      });
-      setStocks(response.data);
+        if (forecastMethodology === 'random') {
+          const selectedTickers = allTickers.sort(() => Math.random() - 0.5).slice(0, numberOfStocks);
+          const response = await axios.post('http://localhost:5000/get_stock_prices', {
+              startDate,
+              endDate,
+              tickers: selectedTickers
+          });
+          // Map to set forecast_price to null and then sort by ticker
+          const updatedStocks = response.data
+              .map(stock => ({
+                  ...stock,
+                  forecast_price: null
+              }))
+              .sort((a, b) => a.ticker.localeCompare(b.ticker));
+          
+          setStocks(updatedStocks); // Set the updated and sorted data to state
+      } else if (forecastMethodology === 'polynomial_2') {
+        // Fetch initial stock prices for all tickers to have base data
+        const baseResponse = await axios.post('http://localhost:5000/get_stock_prices', {
+            startDate,
+            endDate,
+            tickers: allTickers
+        });
+        // Fetch forecast data for all tickers
+        const forecastResponse = await axios.post('http://localhost:5000/forecast_stock_prices', {
+            tickers: allTickers,
+            start_date: startDate,
+            forecast_date: endDate
+        });
+        // Map forecast data back to base data and sort by growth
+        const mappedAndSortedStocks = baseResponse.data
+          .map(stock => ({
+              ...stock,
+              forecast_price: forecastResponse.data.find(f => f.ticker === stock.ticker)?.forecast_price || null,
+              growth_percentage: forecastResponse.data.find(f => f.ticker === stock.ticker)?.growth_percentage || null
+          }))
+          .sort((a, b) => b.growth_percentage - a.growth_percentage)
+          .slice(0, numberOfStocks);
+  
+        setStocks(mappedAndSortedStocks); // Set sorted data with forecasts
+      }
       setActiveNumberOfStocks(numberOfStocks);
     } catch (error) {
-      console.error('Error fetching stocks:', error);
+      console.error('Error fetching stocks or forecast data:', error);
     }
-};
-
-
+  };
+  
   const handleNumberChange = (event) => {
     const number = parseInt(event.target.value, 10); // Convert input value to integer
     if (!isNaN(number) && number >= 2 && number <= 20) {
