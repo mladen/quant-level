@@ -10,7 +10,6 @@ import ListButton from "./ListButton";
 import StockList from "./StockList";
 
 // Importing the Tabs, Tab, Typography, and Box components from Material-UI
-import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
@@ -30,7 +29,7 @@ function App() {
   const [activeNumberOfStocks, setActiveNumberOfStocks] = useState(5);
   const [displayFilter, setDisplayFilter] = useState("Show all");
 
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -75,10 +74,7 @@ function App() {
         );
         // Map to set forecast_price to null and then sort by ticker
         const updatedStocks = response.data
-          .map((stock) => ({
-            ...stock,
-            forecast_price: null,
-          }))
+          .map((stock) => ({ ...stock, forecast_price: null }))
           .sort((a, b) => a.ticker.localeCompare(b.ticker));
 
         setStocks(updatedStocks); // Set the updated and sorted data to state
@@ -130,39 +126,6 @@ function App() {
     }
   };
 
-  function CustomTabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
-
-  CustomTabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
-  };
-
-  function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
-
   return (
     <div className="App">
       <Box sx={{ width: "100%" }}>
@@ -179,9 +142,9 @@ function App() {
             aria-label="basic tabs example"
             centered
           >
-            <Tab label="Long term stock value prediction" {...a11yProps(0)} />
-            <Tab label="Short term stock value prediction" {...a11yProps(1)} />
-            <Tab label="Chat with PDFs (balance sheets)" {...a11yProps(2)} />
+            <Tab label="Long Term Stock Value Prediction" {...a11yProps(0)} />
+            <Tab label="Short Term Stock Value Prediction" {...a11yProps(1)} />
+            <Tab label="Chat with PDFs (Balance Sheets)" {...a11yProps(2)} />
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
@@ -256,6 +219,32 @@ function App() {
       </Box>
     </div>
   );
+}
+
+function CustomTabPanel(props) {
+  const { children, value, index, ...other } = props;
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
 }
 
 export default App;
