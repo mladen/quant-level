@@ -130,24 +130,38 @@ def forecast_stock_prices():
     ), (200 if results else 404)
 
 
-# Get stock data for the last 2 months
-@app.route("/get_stock_data_for_previous_60_days", methods=["GET"])
-def get_stock_data_for_previous_60_days():
+# Get the stock data for the previous 14 days
+@app.route("/get_stock_data_for_previous_14_days", methods=["GET"])
+def get_stock_data_for_previous_14_days():
     today = date.today()
-    two_months_ago = today - timedelta(days=60)
+    two_months_ago = today - timedelta(days=14)
+
     stock_data = DailyStockPrice.query.filter(
         DailyStockPrice.date >= two_months_ago, DailyStockPrice.ticker.in_(tickers)
     ).all()
 
+    print(stock_data)
+
     results = []
+    ticker_dict = {}
+
     for data in stock_data:
-        result = {
-            "ticker": data.ticker,
-            "company_name": data.company_name,
-            "date": data.date.strftime("%Y-%m-%d"),
+        if data.ticker not in ticker_dict:
+            ticker_dict[data.ticker] = {
+                "company_name": data.company_name,
+                "ticker": data.ticker,
+                "prices": [],
+            }
+
+        price_info = {
             "avg_price": f"{data.avg_price:.2f}",
+            # "date": data.date.strftime("%Y-%m-%d"),
+            "date": data.date.strftime("%d.%m.%Y"),
         }
-        results.append(result)
+
+        ticker_dict[data.ticker]["prices"].append(price_info)
+
+    results = list(ticker_dict.values())
 
     return jsonify(results)
 
