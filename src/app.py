@@ -151,6 +151,7 @@ def get_stock_data_for_previous_14_days():
                 "company_name": data.company_name,
                 "ticker": data.ticker,
                 "prices": [],
+                "moving_avg": [],
             }
 
         price_info = {
@@ -159,7 +160,20 @@ def get_stock_data_for_previous_14_days():
             "date": data.date.strftime("%d.%m.%Y"),
         }
 
+        # Moving average info
+        moving_avg = (
+            DailyStockPrice.query.filter(
+                DailyStockPrice.date < data.date,
+                DailyStockPrice.ticker == data.ticker,
+            )
+            .order_by(DailyStockPrice.date.desc())
+            .limit(5)
+        )
+
         ticker_dict[data.ticker]["prices"].append(price_info)
+        ticker_dict[data.ticker]["moving_avg"].append(
+            f"{sum([x.avg_price for x in moving_avg]) / 5:.2f}"
+        )
 
     results = list(ticker_dict.values())
 

@@ -90,6 +90,12 @@ export default function StockChart(props) {
                 curve: "linear",
                 data: stock.prices.map((price) => parseFloat(price.avg_price)),
                 // name: stock.company_name,
+                color: "#dfdfdf",
+              },
+              {
+                type: "line",
+                curve: "linear",
+                data: stock.moving_avg.map((price) => parseFloat(price)),
               },
             ]}
             width={1000}
