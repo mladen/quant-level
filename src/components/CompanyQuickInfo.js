@@ -28,6 +28,20 @@ export default function StockChart(props) {
         console.log("test");
         const response = await getStockDataForPrevious14Days();
         setStockData(response.data);
+
+        console.log("response.data", response.data);
+
+        // Prints out the xAxisValues for the LineChart
+        let xAxisValues = Array.from(
+          Array(response.data[0].prices.length).keys()
+        ).map((num) => num + 1);
+        console.log("xAxisValues", xAxisValues);
+
+        // Prints out the yAxisValues for the LineChart
+        let yAxisValues = response.data[0].prices.map((price) =>
+          parseFloat(price.avg_price)
+        );
+        console.log("yAxisValues", yAxisValues);
       } catch (error) {
         console.error("Error fetching stock data:", error);
       }
@@ -56,25 +70,31 @@ export default function StockChart(props) {
         {/* Create a LineChart for each stock in stockData */}
         {stockData.map((stock, index) => (
           <LineChart
-            key={stock.ticker + index}
+            key={stock.ticker}
             xAxis={[
               {
                 // data: stock.prices.map((price) => price.date),
-                data: Array.from(Array(stock.prices.length).keys()).map(
-                  (num) => num + 1
+                // data: Array.from(Array(stock.prices.length).keys()).map(
+                //   (num) => num + 1
+                // ),
+                data: Array.from(
+                  stock.prices.map((element, index) => parseInt(index + 1))
                 ),
+                // data: stock.prices.map((element) => element.date),
                 // dataKey: "date",
               },
             ]}
             series={[
               {
                 type: "line",
+                curve: "linear",
                 data: stock.prices.map((price) => parseFloat(price.avg_price)),
                 // name: stock.company_name,
               },
             ]}
             width={1000}
             height={400}
+            grid={{ vertical: true, horizontal: true }}
           />
         ))}
       </div>
