@@ -16,7 +16,12 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
 // Importing the LineChart component (with dummy data for now) from the LineChart.js file
-import LineChart from "./components/LineChart";
+// import LineChart from "./components/LineChart";
+
+// import Container from "@mui/material/Container";
+// import Grid from "@mui/material/Grid";
+// import Paper from "@mui/material/Paper";
+import CompanyQuickInfo from "./components/CompanyQuickInfo";
 
 function App() {
   const [startDate, setStartDate] = useState("");
@@ -45,18 +50,18 @@ function App() {
       "GOOGL",
       "HD",
       "JNJ",
-      "JPM",
-      "KO",
-      "MA",
-      "META",
-      "MSFT",
-      "NVDA",
-      "PG",
-      "TSLA",
-      "UNH",
-      "V",
-      "WMT",
-      "XOM",
+      // "JPM",
+      // "KO",
+      // "MA",
+      // "META",
+      // "MSFT",
+      // "NVDA",
+      // "PG",
+      // "TSLA",
+      // "UNH",
+      // "V",
+      // "WMT",
+      // "XOM",
     ];
 
     try {
@@ -205,12 +210,26 @@ function App() {
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
           <div className="three-column-container">
-            <div className="column"></div>
             <div className="column">
-              Short term stock value prediction goes here
-              <LineChart />
+              {/* Print stocks */}
+              <div>
+                <h1>Today's prices of our stocks</h1>
+                <ul>
+                  {stocks.map((stock, index) => (
+                    <li key={index}>
+                      {stock.ticker} - {stock.forecast_price}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-            <div className="column"></div>
+            <div className="column">
+              {/* <LineChart /> */}
+              <CompanyQuickInfo />
+            </div>
+            <div className="column">
+              Third column for additional data and decision
+            </div>
           </div>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
