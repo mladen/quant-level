@@ -6,6 +6,7 @@
   - [Setup instructions](#setup-instructions)
   - [Features](#features)
   - [Current Development Status](#current-development-status)
+  - [Known Bugs](#known-bugs)
 
 ## Description
 
@@ -59,7 +60,10 @@ This web application leverages React and Flask to offer a dynamic interface for 
 - **Dynamic Stock Number Selection**: Users can decide how many stocks they want to analyze and see the forecast for.
 - **Display Filters**: Stocks can be filtered to show all, winners, or losers based on performance.
 
-
 ## Current Development Status
 
 Additional features are being developed on the `adding-front-library-and-short-term-prediction-algos` branch of this repository. We expect to merge these updates into the main project shortly.
+
+## Known Bugs
+
+- **Non-working days issue**: The application may encounter errors if the selected start or end date falls on a non-working day for the stock market, such as weekends or public holidays. This occurs because the app tries to fetch stock data on days when the market is closed. We are working to resolve this issue. Until then, please ensure to choose dates that are regular trading days.
