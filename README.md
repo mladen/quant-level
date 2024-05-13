@@ -5,6 +5,7 @@
   - [Technologies](#technologies)
   - [Setup instructions](#setup-instructions)
   - [Features](#features)
+  - [Current Development Status](#current-development-status)
 
 ## Description
 
@@ -57,3 +58,8 @@ This web application leverages React and Flask to offer a dynamic interface for 
 - **Investment Budget Input**: Users can input their overall investment budget to see how it could be distributed across different stocks.
 - **Dynamic Stock Number Selection**: Users can decide how many stocks they want to analyze and see the forecast for.
 - **Display Filters**: Stocks can be filtered to show all, winners, or losers based on performance.
+
+
+## Current Development Status
+
+Additional features are being developed on the `adding-front-library-and-short-term-prediction-algos` branch of this repository. We expect to merge these updates into the main project shortly.
