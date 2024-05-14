@@ -50,79 +50,65 @@ function App() {
       "GOOGL",
       "HD",
       "JNJ",
-      // "JPM",
-      // "KO",
-      // "MA",
-      // "META",
-      // "MSFT",
-      // "NVDA",
-      // "PG",
-      // "TSLA",
-      // "UNH",
-      // "V",
-      // "WMT",
-      // "XOM",
+      "JPM",
+      "KO",
+      "MA",
+      "META",
+      "MSFT",
+      "NVDA",
+      "PG",
+      "TSLA",
+      "UNH",
+      "V",
+      "WMT",
+      "XOM",
     ];
 
     try {
-      if (forecastMethodology === "random") {
-        const selectedTickers = allTickers
-          .sort(() => Math.random() - 0.5)
-          .slice(0, numberOfStocks);
-        const response = await axios.post(
-          "http://localhost:5000/get_stock_prices",
-          {
-            startDate,
-            endDate,
-            tickers: selectedTickers,
-          }
-        );
-        // Map to set forecast_price to null and then sort by ticker
-        const updatedStocks = response.data
-          .map((stock) => ({ ...stock, forecast_price: null }))
-          .sort((a, b) => a.ticker.localeCompare(b.ticker));
+      if (forecastMethodology === 'random') {
+          const selectedTickers = allTickers.sort(() => Math.random() - 0.5).slice(0, numberOfStocks);
+          const response = await axios.post('http://localhost:5000/get_stock_prices', {
+              startDate,
+              endDate,
+              tickers: selectedTickers
+          });
+          // Map to set forecast_price to null and then sort by ticker
+          const updatedStocks = response.data
+              .map(stock => ({
+                  ...stock,
+                  forecast_price: null
+              }))
+              .sort((a, b) => a.ticker.localeCompare(b.ticker));
+          setStocks(updatedStocks); // Set the updated and sorted data to state
+      } else {
+          const baseResponse = await axios.post('http://localhost:5000/get_stock_prices', {
+              startDate,
+              endDate,
+              tickers: allTickers
+          });
+          const forecastResponse = await axios.post('http://localhost:5000/forecast_stock_prices', {
+              tickers: allTickers,
+              start_date: startDate,
+              forecast_date: endDate,
+              method: forecastMethodology
+          });
+          // Map forecast data back to base data and sort by growth
+          const mappedAndSortedStocks = baseResponse.data
+            .map(stock => ({
+                ...stock,
+                forecast_price: forecastResponse.data.find(f => f.ticker === stock.ticker)?.forecast_price || null,
+                growth_percentage: forecastResponse.data.find(f => f.ticker === stock.ticker)?.growth_percentage || null
+            }))
+            .sort((a, b) => b.growth_percentage - a.growth_percentage)
+            .slice(0, numberOfStocks);
 
-        setStocks(updatedStocks); // Set the updated and sorted data to state
-      } else if (forecastMethodology === "polynomial_2") {
-        // Fetch initial stock prices for all tickers to have base data
-        const baseResponse = await axios.post(
-          "http://localhost:5000/get_stock_prices",
-          {
-            startDate,
-            endDate,
-            tickers: allTickers,
-          }
-        );
-        // Fetch forecast data for all tickers
-        const forecastResponse = await axios.post(
-          "http://localhost:5000/forecast_stock_prices",
-          {
-            tickers: allTickers,
-            start_date: startDate,
-            forecast_date: endDate,
-          }
-        );
-        // Map forecast data back to base data and sort by growth
-        const mappedAndSortedStocks = baseResponse.data
-          .map((stock) => ({
-            ...stock,
-            forecast_price:
-              forecastResponse.data.find((f) => f.ticker === stock.ticker)
-                ?.forecast_price || null,
-            growth_percentage:
-              forecastResponse.data.find((f) => f.ticker === stock.ticker)
-                ?.growth_percentage || null,
-          }))
-          .sort((a, b) => b.growth_percentage - a.growth_percentage)
-          .slice(0, numberOfStocks);
-
-        setStocks(mappedAndSortedStocks); // Set sorted data with forecasts
+          setStocks(mappedAndSortedStocks); // Set sorted data with forecasts
       }
       setActiveNumberOfStocks(numberOfStocks);
-    } catch (error) {
-      console.error("Error fetching stocks or forecast data:", error);
-    }
-  };
+  } catch (error) {
+      console.error('Error fetching stocks or forecast data:', error);
+  }
+};
 
   const handleNumberChange = (event) => {
     const number = parseInt(event.target.value, 10); // Convert input value to integer
@@ -149,7 +135,6 @@ function App() {
           >
             <Tab label="Long Term Stock Value Prediction" {...a11yProps(0)} />
             <Tab label="Short Term Stock Value Prediction" {...a11yProps(1)} />
-            <Tab label="Chat with PDFs (Balance Sheets)" {...a11yProps(2)} />
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
@@ -231,9 +216,6 @@ function App() {
               Third column for additional data and decision
             </div>
           </div>
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={2}>
-          Chat with PDF goes here, maybe, just maybe... :)
         </CustomTabPanel>
       </Box>
     </div>

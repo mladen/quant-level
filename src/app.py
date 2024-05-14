@@ -14,24 +14,24 @@ CORS(app)
 tickers = [
     "AAPL",
     "AMZN",
-    # "BAC",
-    # "BRK-B",
-    # "DIS",
-    # "GOOGL",
-    # "HD",
-    # "JNJ",
-    # "JPM",
-    # "KO",
-    # "MA",
-    # "META",
-    # "MSFT",
-    # "NVDA",
-    # "PG",
-    # "TSLA",
-    # "UNH",
-    # "V",
-    # "WMT",
-    # "XOM",
+    "BAC",
+    "BRK-B",
+    "DIS",
+    "GOOGL",
+    "HD",
+    "JNJ",
+    "JPM",
+    "KO",
+    "MA",
+    "META",
+    "MSFT",
+    "NVDA",
+    "PG",
+    "TSLA",
+    "UNH",
+    "V",
+    "WMT",
+    "XOM",
 ]
 
 
@@ -106,28 +106,31 @@ def get_stock_prices():
     )
 
 
-@app.route("/forecast_stock_prices", methods=["POST"])
+@app.route('/forecast_stock_prices', methods=['POST'])
 def forecast_stock_prices():
     data = request.json
-    if (
-        not data
-        or "tickers" not in data
-        or "start_date" not in data
-        or "forecast_date" not in data
-    ):
-        return jsonify({"error": "Missing data in request"}), 400
+    tickers = data.get('tickers')
+    start_date = data.get('start_date')
+    forecast_date = data.get('forecast_date')
+    method = data.get('method')
 
-    tickers = data["tickers"]
+    if not tickers or not start_date or not forecast_date:
+        return jsonify({'error': 'Missing data in request'}), 400
+
     try:
-        start_date = datetime.strptime(data["start_date"], "%Y-%m-%d").date()
-        forecast_date = datetime.strptime(data["forecast_date"], "%Y-%m-%d").date()
+        start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+        forecast_date = datetime.strptime(forecast_date, '%Y-%m-%d').date()
+        if method == 'linear':
+            degree = 1  # Linear regression
+        elif method == 'polynomial_2':
+            degree = 2  # Quadratic regression
+        elif method == 'polynomial_3':
+            degree = 3  # Cubic regression
+        results = polynomial_regression(tickers, start_date, forecast_date, degree)
     except ValueError as e:
-        return jsonify({"error": "Invalid date format", "details": str(e)}), 400
+        return jsonify({'error': 'Invalid date format', 'details': str(e)}), 400
 
-    results = polynomial_regression(tickers, start_date, forecast_date)
-    return jsonify(
-        results if results else {"error": "No data available for forecasting"}
-    ), (200 if results else 404)
+    return jsonify(results if results else {'error': 'No data available for forecasting'}), (200 if results else 404)
 
 
 # Get the stock data for the previous 14 days
