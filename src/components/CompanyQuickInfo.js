@@ -52,7 +52,6 @@ export default function StockChart(props) {
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Stock Data for Last 14 Days
         {/* Print out prices for each day for each stock */}
         {/* {stockData.map((stock, index) => (
           <div key={`${stock.ticker}-${index}`}>
@@ -90,12 +89,15 @@ export default function StockChart(props) {
                 curve: "linear",
                 data: stock.prices.map((price) => parseFloat(price.avg_price)),
                 // name: stock.company_name,
-                color: "#dfdfdf",
+                label: `${stock.company_name} stock value`,
+                color: "#1976d2",
               },
               {
                 type: "line",
                 curve: "linear",
                 data: stock.moving_avg.map((price) => parseFloat(price)),
+                label: `${stock.company_name} moving average`,
+                color: "gray",
               },
             ]}
             width={1000}

@@ -195,25 +195,13 @@ function App() {
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
           <div className="three-column-container">
-            <div className="column">
-              {/* Print stocks */}
-              <div>
-                <h1>Today's prices of our stocks</h1>
-                <ul>
-                  {stocks.map((stock, index) => (
-                    <li key={index}>
-                      {stock.ticker} - {stock.forecast_price}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            <div className="column"></div>
             <div className="column">
               {/* <LineChart /> */}
               <CompanyQuickInfo />
             </div>
             <div className="column">
-              Third column for additional data and decision
+              {/* Third column for additional data and decision */}
             </div>
           </div>
         </CustomTabPanel>
