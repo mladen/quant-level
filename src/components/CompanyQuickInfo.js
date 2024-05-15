@@ -79,8 +79,15 @@ export default function StockChart(props) {
                 data: Array.from(
                   stock.prices.map((element, index) => parseInt(index + 1))
                 ),
+                tickInterval: Array.from(
+                  stock.prices.map((element, index) => parseInt(index + 1))
+                ),
                 // data: stock.prices.map((element) => element.date),
                 // dataKey: "date",
+                scaleType: "time",
+                // valueFormatter: (date) => new Date(date),
+                valueFormatter: (date) => date.toString().split(" ")[0],
+                // valueFormatter: (xAxisValues) => xAxisValues,
               },
             ]}
             series={[
