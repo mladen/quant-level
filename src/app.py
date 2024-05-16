@@ -4,6 +4,7 @@ import yfinance as yf
 from datetime import date, datetime, timedelta
 from models import db, DailyStockPrice
 from forecast import polynomial_regression
+from pprint import pprint
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///stocks.db"
@@ -106,49 +107,58 @@ def get_stock_prices():
     )
 
 
-@app.route('/forecast_stock_prices', methods=['POST'])
+@app.route("/forecast_stock_prices", methods=["POST"])
 def forecast_stock_prices():
     data = request.json
-    tickers = data.get('tickers')
-    start_date = data.get('start_date')
-    forecast_date = data.get('forecast_date')
-    method = data.get('method')
+    tickers = data.get("tickers")
+    start_date = data.get("start_date")
+    forecast_date = data.get("forecast_date")
+    method = data.get("method")
 
     if not tickers or not start_date or not forecast_date:
-        return jsonify({'error': 'Missing data in request'}), 400
+        return jsonify({"error": "Missing data in request"}), 400
 
     try:
-        start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
-        forecast_date = datetime.strptime(forecast_date, '%Y-%m-%d').date()
-        if method == 'linear':
+        start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+        forecast_date = datetime.strptime(forecast_date, "%Y-%m-%d").date()
+        if method == "linear":
             degree = 1  # Linear regression
-        elif method == 'polynomial_2':
+        elif method == "polynomial_2":
             degree = 2  # Quadratic regression
-        elif method == 'polynomial_3':
+        elif method == "polynomial_3":
             degree = 3  # Cubic regression
         results = polynomial_regression(tickers, start_date, forecast_date, degree)
     except ValueError as e:
-        return jsonify({'error': 'Invalid date format', 'details': str(e)}), 400
+        return jsonify({"error": "Invalid date format", "details": str(e)}), 400
 
-    return jsonify(results if results else {'error': 'No data available for forecasting'}), (200 if results else 404)
+    return jsonify(
+        results if results else {"error": "No data available for forecasting"}
+    ), (200 if results else 404)
 
 
 # Get the stock data for the previous 14 days
 @app.route("/get_stock_data_for_previous_14_days", methods=["GET"])
 def get_stock_data_for_previous_14_days():
     today = date.today()
-    two_months_ago = today - timedelta(days=14)
+    two_weeks_ago = today - timedelta(days=14)
 
     stock_data = DailyStockPrice.query.filter(
-        DailyStockPrice.date >= two_months_ago, DailyStockPrice.ticker.in_(tickers)
+        DailyStockPrice.date >= two_weeks_ago, DailyStockPrice.ticker.in_(tickers)
     ).all()
 
-    print(stock_data)
+    print(
+        "-----------------------------------------------------------------------------------------------------------------------"
+    )
+
+    print(
+        f"Found {len(stock_data)} data points for the last 2 weeks ago (14 days - weekends and non-working days) - from {two_weeks_ago} to {today}"
+    )
+    pprint(stock_data)
 
     results = []
     ticker_dict = {}
 
-    for data in stock_data:
+    for data in stock_data:  # Each "data" is an instance of the DailyStockPrice class
         if data.ticker not in ticker_dict:
             ticker_dict[data.ticker] = {
                 "company_name": data.company_name,
@@ -159,8 +169,8 @@ def get_stock_data_for_previous_14_days():
 
         price_info = {
             "avg_price": f"{data.avg_price:.2f}",
-            # "date": data.date.strftime("%Y-%m-%d"),
-            "date": data.date.strftime("%d.%m.%Y"),
+            "date": data.date.strftime("%Y-%m-%d"),
+            # "date": data.date.strftime("%d.%m.%Y"),
         }
 
         # Moving average info
