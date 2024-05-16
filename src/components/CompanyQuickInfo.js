@@ -29,15 +29,18 @@ export default function StockChart(props) {
         const response = await getStockDataForPrevious14Days();
         setStockData(response.data);
 
-        console.log("response.data", response.data);
+        console.log(
+          "getStockDataForPrevious14Days() response.data (companies and their stock info):",
+          response.data
+        );
 
-        // Prints out the xAxisValues for the LineChart
+        // Just prints out the xAxisValues for the LineChart
         let xAxisValues = Array.from(
           Array(response.data[0].prices.length).keys()
         ).map((num) => num + 1);
         console.log("xAxisValues", xAxisValues);
 
-        // Prints out the yAxisValues for the LineChart
+        // Just prints out the yAxisValues for the LineChart
         let yAxisValues = response.data[0].prices.map((price) =>
           parseFloat(price.avg_price)
         );

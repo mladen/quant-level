@@ -65,50 +65,65 @@ function App() {
     ];
 
     try {
-      if (forecastMethodology === 'random') {
-          const selectedTickers = allTickers.sort(() => Math.random() - 0.5).slice(0, numberOfStocks);
-          const response = await axios.post('http://localhost:5000/get_stock_prices', {
-              startDate,
-              endDate,
-              tickers: selectedTickers
-          });
-          // Map to set forecast_price to null and then sort by ticker
-          const updatedStocks = response.data
-              .map(stock => ({
-                  ...stock,
-                  forecast_price: null
-              }))
-              .sort((a, b) => a.ticker.localeCompare(b.ticker));
-          setStocks(updatedStocks); // Set the updated and sorted data to state
+      if (forecastMethodology === "random") {
+        const selectedTickers = allTickers
+          .sort(() => Math.random() - 0.5)
+          .slice(0, numberOfStocks);
+        const response = await axios.post(
+          "http://localhost:5000/get_stock_prices",
+          {
+            startDate,
+            endDate,
+            tickers: selectedTickers,
+          }
+        );
+        // Map to set forecast_price to null and then sort by ticker
+        const updatedStocks = response.data
+          .map((stock) => ({
+            ...stock,
+            forecast_price: null,
+          }))
+          .sort((a, b) => a.ticker.localeCompare(b.ticker));
+        setStocks(updatedStocks); // Set the updated and sorted data to state
       } else {
-          const baseResponse = await axios.post('http://localhost:5000/get_stock_prices', {
-              startDate,
-              endDate,
-              tickers: allTickers
-          });
-          const forecastResponse = await axios.post('http://localhost:5000/forecast_stock_prices', {
-              tickers: allTickers,
-              start_date: startDate,
-              forecast_date: endDate,
-              method: forecastMethodology
-          });
-          // Map forecast data back to base data and sort by growth
-          const mappedAndSortedStocks = baseResponse.data
-            .map(stock => ({
-                ...stock,
-                forecast_price: forecastResponse.data.find(f => f.ticker === stock.ticker)?.forecast_price || null,
-                growth_percentage: forecastResponse.data.find(f => f.ticker === stock.ticker)?.growth_percentage || null
-            }))
-            .sort((a, b) => b.growth_percentage - a.growth_percentage)
-            .slice(0, numberOfStocks);
+        const baseResponse = await axios.post(
+          "http://localhost:5000/get_stock_prices",
+          {
+            startDate,
+            endDate,
+            tickers: allTickers,
+          }
+        );
+        const forecastResponse = await axios.post(
+          "http://localhost:5000/forecast_stock_prices",
+          {
+            tickers: allTickers,
+            start_date: startDate,
+            forecast_date: endDate,
+            method: forecastMethodology,
+          }
+        );
+        // Map forecast data back to base data and sort by growth
+        const mappedAndSortedStocks = baseResponse.data
+          .map((stock) => ({
+            ...stock,
+            forecast_price:
+              forecastResponse.data.find((f) => f.ticker === stock.ticker)
+                ?.forecast_price || null,
+            growth_percentage:
+              forecastResponse.data.find((f) => f.ticker === stock.ticker)
+                ?.growth_percentage || null,
+          }))
+          .sort((a, b) => b.growth_percentage - a.growth_percentage)
+          .slice(0, numberOfStocks);
 
-          setStocks(mappedAndSortedStocks); // Set sorted data with forecasts
+        setStocks(mappedAndSortedStocks); // Set sorted data with forecasts
       }
       setActiveNumberOfStocks(numberOfStocks);
-  } catch (error) {
-      console.error('Error fetching stocks or forecast data:', error);
-  }
-};
+    } catch (error) {
+      console.error("Error fetching stocks or forecast data:", error);
+    }
+  };
 
   const handleNumberChange = (event) => {
     const number = parseInt(event.target.value, 10); // Convert input value to integer
