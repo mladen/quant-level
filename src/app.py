@@ -72,6 +72,13 @@ def fetch_and_store_stock_data():
             db.session.add(daily_data)
         db.session.commit()
 
+@app.route('/get_trading_days', methods=['GET'])
+def get_trading_days():
+    tickers = ["AAPL"]  # It can be any ticker that has continuous data
+    stock_info = yf.Ticker(tickers[0])
+    stock_data = stock_info.history(period="max")
+    trading_days = stock_data.index.strftime('%Y-%m-%d').tolist()
+    return jsonify(trading_days)
 
 @app.route("/get_stock_prices", methods=["POST"])
 def get_stock_prices():

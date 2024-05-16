@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
 import DateInput from "./DateInput";
@@ -26,8 +26,7 @@ import CompanyQuickInfo from "./components/CompanyQuickInfo";
 function App() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [forecastMethodology, setForecastMethodology] =
-    useState("polynomial_2"); // Set 'Quadratic Polynomial Regression' as the default Forecast Methodology
+  const [forecastMethodology, setForecastMethodology] = useState("polynomial_2"); // Set 'Quadratic Polynomial Regression' as the default Forecast Methodology
   const [overallInvestmentBudget, setOverallInvestmentBudget] = useState(1000);
   const [stocks, setStocks] = useState([]);
   const [numberOfStocks, setNumberOfStocks] = useState(5);
@@ -35,6 +34,22 @@ function App() {
   const [displayFilter, setDisplayFilter] = useState("Show all");
 
   const [value, setValue] = useState(0);
+
+  const [tradingDays, setTradingDays] = useState([]);
+
+  // Fetch trading days on initialization
+  useEffect(() => {
+    const fetchTradingDays = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/get_trading_days');
+        setTradingDays(response.data);
+      } catch (error) {
+        console.error('Error fetching trading days:', error);
+      }
+    };
+
+    fetchTradingDays();
+  }, []);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -63,6 +78,12 @@ function App() {
       "WMT",
       "XOM",
     ];
+
+    // Validate selected dates before making any API requests
+    if (!validateDate(startDate) || !validateDate(endDate)) {
+      alert('Selected date(s) are not trading days. Please select valid trading days.');
+      return;
+    }
 
     try {
       if (forecastMethodology === "random") {
@@ -123,6 +144,11 @@ function App() {
     } catch (error) {
       console.error("Error fetching stocks or forecast data:", error);
     }
+  };
+
+  // Function to validate if a date is a trading day
+  const validateDate = (date) => {
+    return tradingDays.includes(date);
   };
 
   const handleNumberChange = (event) => {
