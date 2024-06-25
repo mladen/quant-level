@@ -34,11 +34,17 @@ This web application leverages React and Flask to offer a dynamic interface for 
        - Windows: `env\Scripts\activate`
        - Linux: `source env/bin/activate`
      - Install the required dependencies: `pip install -r requirements.txt`
+
    - For the frontend:
      - Install Node.js and npm if you haven't already
      - Install the required dependencies: `npm install`
 
-3. Run the application
+  > NOTE: If we want requirements.txt to be automatically generated, we can use the following command:
+  > - `pip freeze > requirements.txt` (not recommended)
+  > - use pipreqs: `pip install pipreqs` and then `pipreqs /path/to/project` (recommended)
+  >   - check out [this tutorial](https://builtin.com/software-engineering-perspectives/pip-freeze) or the official [pipreqs documentation](https://pypi.org/project/pipreqs/) for more information
+
+1. Run the application
 
    - For the backend:
      - Start the Flask server (execute this command in the root directory of the project):
